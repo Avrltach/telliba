@@ -46,4 +46,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function dokumen()
+{
+    return $this->hasMany(Dokumen::class, 'UserID');
+}
+
 }
