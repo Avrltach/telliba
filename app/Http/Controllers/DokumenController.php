@@ -4,79 +4,102 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Dokumen;
-use App\Models\User;
 use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 
 class DokumenController extends Controller
 {
-    // Tampilkan semua dokumen
     public function index()
     {
-        $dokumens = Dokumen::with(['user', 'category'])->get();
+        $dokumens = auth()->user()->role === 'admin'
+            ? Dokumen::with('category')->get()
+            : Dokumen::where('UserID', auth()->id())->with('category')->get();
+
         return view('dokumen.index', compact('dokumens'));
     }
 
-    // Tampilkan form untuk membuat dokumen baru
     public function create()
     {
-        $users = User::all();
         $categories = Category::all();
-        return view('dokumen.create', compact('users', 'categories'));
+        return view('dokumen.create', compact('categories'));
     }
 
-    // Simpan dokumen baru ke database
     public function store(Request $request)
     {
         $request->validate([
-            'UserID' => 'required|exists:users,UserID',
-            'CategoryID' => 'required|exists:categories,CategoryID',
-            'Title' => 'required|string|max:255',
-            'Description' => 'nullable|string',
+            'Title' => 'required',
+            'Description' => 'nullable',
+            'CategoryID' => 'required',
+            'file' => 'required|file|mimes:pdf,docx|max:2048',
         ]);
 
-        Dokumen::create($request->all());
+        $path = $request->file('file')->store('dokumen', 'public');
+
+        Dokumen::create([
+            'UserID' => auth()->id(),
+            'CategoryID' => $request->CategoryID,
+            'Title' => $request->Title,
+            'Description' => $request->Description,
+            'FilePath' => $path,
+        ]);
 
         return redirect()->route('dokumen.index')->with('success', 'Dokumen berhasil ditambahkan.');
     }
 
-    // Tampilkan detail dokumen
-    public function show($id)
-    {
-        $dokumen = Dokumen::with(['user', 'category'])->findOrFail($id);
-        return view('dokumen.show', compact('dokumen'));
-    }
-
-    // Tampilkan form edit dokumen
     public function edit($id)
     {
         $dokumen = Dokumen::findOrFail($id);
-        $users = User::all();
         $categories = Category::all();
-        return view('dokumen.edit', compact('dokumen', 'users', 'categories'));
+
+        if (auth()->user()->role !== 'admin' && $dokumen->UserID !== auth()->id()) {
+            abort(403);
+        }
+
+        return view('dokumen.edit', compact('dokumen', 'categories'));
     }
 
-    // Update dokumen
     public function update(Request $request, $id)
     {
+        $dokumen = Dokumen::findOrFail($id);
+
+        if (auth()->user()->role !== 'admin' && $dokumen->UserID !== auth()->id()) {
+            abort(403);
+        }
+
         $request->validate([
-            'UserID' => 'required|exists:users,UserID',
-            'CategoryID' => 'required|exists:categories,CategoryID',
-            'Title' => 'required|string|max:255',
-            'Description' => 'nullable|string',
+            'Title' => 'required',
+            'Description' => 'nullable',
+            'CategoryID' => 'required',
+            'file' => 'nullable|file|mimes:pdf,docx|max:2048',
         ]);
 
-        $dokumen = Dokumen::findOrFail($id);
-        $dokumen->update($request->all());
+        if ($request->hasFile('file')) {
+            Storage::disk('public')->delete($dokumen->FilePath);
+            $dokumen->FilePath = $request->file('file')->store('dokumen', 'public');
+        }
 
-        return redirect()->route('dokumen.index')->with('success', 'Dokumen berhasil diupdate.');
+        $dokumen->update([
+            'Title' => $request->Title,
+            'Description' => $request->Description,
+            'CategoryID' => $request->CategoryID,
+            'FilePath' => $dokumen->FilePath,
+        ]);
+
+        return redirect()->route('dokumen.index')->with('success', 'Dokumen berhasil diperbarui.');
     }
 
-    // Hapus dokumen
     public function destroy($id)
     {
         $dokumen = Dokumen::findOrFail($id);
+
+        if (auth()->user()->role !== 'admin' && $dokumen->UserID !== auth()->id()) {
+            abort(403);
+        }
+
+        Storage::disk('public')->delete($dokumen->FilePath);
         $dokumen->delete();
 
         return redirect()->route('dokumen.index')->with('success', 'Dokumen berhasil dihapus.');
     }
 }
+

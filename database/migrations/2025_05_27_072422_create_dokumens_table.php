@@ -17,8 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('CategoryID');
             $table->string('Title');
             $table->text('Description')->nullable();
-
-            
+            $table->string('FilePath');
             $table->timestamps();
         });
     }
