@@ -12,8 +12,8 @@ class DokumenController extends Controller
     public function index()
     {
         $dokumens = auth()->user()->role === 'admin'
-            ? Dokumen::with('category')->get()
-            : Dokumen::where('UserID', auth()->id())->with('category')->get();
+            ? Dokumen::with('category', 'user')->latest()->get()
+            : Dokumen::with('category')->where('UserID', auth()->id())->latest()->get();
 
         return view('dokumen.index', compact('dokumens'));
     }
@@ -27,9 +27,9 @@ class DokumenController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'Title' => 'required',
-            'Description' => 'nullable',
-            'CategoryID' => 'required',
+            'Title' => 'required|string|max:255',
+            'Description' => 'nullable|string',
+            'CategoryID' => 'required|exists:categories,id',
             'file' => 'required|file|mimes:pdf,docx|max:2048',
         ]);
 
@@ -52,7 +52,7 @@ class DokumenController extends Controller
         $categories = Category::all();
 
         if (auth()->user()->role !== 'admin' && $dokumen->UserID !== auth()->id()) {
-            abort(403);
+            abort(403, 'Tidak memiliki izin.');
         }
 
         return view('dokumen.edit', compact('dokumen', 'categories'));
@@ -63,18 +63,22 @@ class DokumenController extends Controller
         $dokumen = Dokumen::findOrFail($id);
 
         if (auth()->user()->role !== 'admin' && $dokumen->UserID !== auth()->id()) {
-            abort(403);
+            abort(403, 'Tidak memiliki izin.');
         }
 
         $request->validate([
-            'Title' => 'required',
-            'Description' => 'nullable',
-            'CategoryID' => 'required',
+            'Title' => 'required|string|max:255',
+            'Description' => 'nullable|string',
+            'CategoryID' => 'required|exists:categories,id',
             'file' => 'nullable|file|mimes:pdf,docx|max:2048',
         ]);
 
+        // Ganti file jika ada
         if ($request->hasFile('file')) {
-            Storage::disk('public')->delete($dokumen->FilePath);
+            if ($dokumen->FilePath && Storage::disk('public')->exists($dokumen->FilePath)) {
+                Storage::disk('public')->delete($dokumen->FilePath);
+            }
+
             $dokumen->FilePath = $request->file('file')->store('dokumen', 'public');
         }
 
@@ -93,13 +97,15 @@ class DokumenController extends Controller
         $dokumen = Dokumen::findOrFail($id);
 
         if (auth()->user()->role !== 'admin' && $dokumen->UserID !== auth()->id()) {
-            abort(403);
+            abort(403, 'Tidak memiliki izin.');
         }
 
-        Storage::disk('public')->delete($dokumen->FilePath);
+        if ($dokumen->FilePath && Storage::disk('public')->exists($dokumen->FilePath)) {
+            Storage::disk('public')->delete($dokumen->FilePath);
+        }
+
         $dokumen->delete();
 
         return redirect()->route('dokumen.index')->with('success', 'Dokumen berhasil dihapus.');
     }
 }
-
