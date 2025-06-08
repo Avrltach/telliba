@@ -11,6 +11,15 @@ class DokumenController extends Controller
     public function index()
     {
         $dokumens = Dokumen::latest()->get();
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data dokumen berhasil diambil.',
+                'data' => $dokumens
+            ], 200);
+        }
+
         return view('admin.index', compact('dokumens'));
     }
 
@@ -30,12 +39,20 @@ class DokumenController extends Controller
 
         $path = $request->file('file_path')->store('dokumen', 'public');
 
-        Dokumen::create([
+        $dokumen = Dokumen::create([
             'title' => $request->title,
             'description' => $request->description,
             'category' => $request->category,
             'file_path' => $path,
         ]);
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Dokumen berhasil ditambahkan.',
+                'data' => $dokumen
+            ], 201);
+        }
 
         return redirect()->route('admin.index')->with('success', 'Dokumen berhasil ditambahkan.');
     }
@@ -57,7 +74,6 @@ class DokumenController extends Controller
             'file_path' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
-        // Jika file baru di-upload, hapus file lama dan ganti
         if ($request->hasFile('file_path')) {
             if ($dokumen->file_path && Storage::disk('public')->exists($dokumen->file_path)) {
                 Storage::disk('public')->delete($dokumen->file_path);
@@ -73,6 +89,14 @@ class DokumenController extends Controller
             'file_path' => $dokumen->file_path,
         ]);
 
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Dokumen berhasil diperbarui.',
+                'data' => $dokumen
+            ]);
+        }
+
         return redirect()->route('admin.index')->with('success', 'Dokumen berhasil diperbarui.');
     }
 
@@ -86,24 +110,39 @@ class DokumenController extends Controller
 
         $dokumen->delete();
 
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Dokumen berhasil dihapus.'
+            ]);
+        }
+
         return redirect()->route('admin.index')->with('success', 'Dokumen berhasil dihapus.');
     }
-    public function show($id)
-{
-    $dokumen = Dokumen::findOrFail($id);
-    return view('dokumens.show', compact('dokumen'));
-}
-public function viewFile($id)
-{
-    $dokumen = Dokumen::findOrFail($id);
-    $path = storage_path('app/public/' . $dokumen->file_path);
 
-    if (!file_exists($path)) {
-        abort(404);
+    public function show($id)
+    {
+        $dokumen = Dokumen::findOrFail($id);
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'data' => $dokumen
+            ]);
+        }
+
+        return view('dokumens.show', compact('dokumen'));
     }
 
-    return response()->file($path);
-}
+    public function viewFile($id)
+    {
+        $dokumen = Dokumen::findOrFail($id);
+        $path = storage_path('app/public/' . $dokumen->file_path);
 
+        if (!file_exists($path)) {
+            abort(404);
+        }
 
+        return response()->file($path);
+    }
 }
