@@ -17,11 +17,11 @@
 
     <script>
         function {{ $closeFunction }}() {
-            dokumen.getElementById('{{ $id }}').classList.add('hidden');
+            document.getElementById('{{ $id }}').classList.add('hidden');
         }
 
         setTimeout(function() {
-            var el = dokumen.getElementById('{{ $id }}');
+            var el = document.getElementById('{{ $id }}');
             if (el) el.classList.add('hidden');
         }, 5000);
     </script>
@@ -45,11 +45,15 @@
             </a>
         @endif
     @else
-        <h1 class="text-2xl font-semibold mb-2">Selamat datang di Telliba!</h1>
-        <p class="text-gray-700">Silakan login untuk mengakses arsip dokumen digital.</p>
+        <div class="text-center flex flex-col items-center justify-center">
+            <h1 class="text-2xl font-semibold text-gray-800 mb-4">Selamat datang di Telliba!</h1>
+            <img src="{{ asset('images/logo.png') }}" alt="Gambar Selamat Datang" class="w-64 h-auto mb-4">
+            <p class="text-gray-700 text-lg">Silakan login untuk mengakses arsip dokumen digital.</p>
+        </div>
     @endauth
 </div>
 
+@auth
 <div class="bg-white p-6 rounded shadow">
     <h2 class="text-xl font-bold mb-4">Dokumen Terbaru</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -66,4 +70,5 @@
         @endforelse
     </div>
 </div>
+@endauth
 @endsection
