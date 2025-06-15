@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Dokumen;
 use App\Models\Category;
+use App\Models\User;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,11 +13,15 @@ class DokumenController extends Controller
 {
     // Tampilkan list dokumen dengan pagination
     public function index()
-    {
-        // Eager load category supaya tidak N+1 query
-        $dokumens = Dokumen::with('category')->latest()->paginate(10);
-        return view('dokumens.index', compact('dokumens'));
-    }
+{
+    $dokumens = Dokumen::with('category')->paginate(10); // ambil data dokumen dengan relasi category
+    $totalDokumen = Dokumen::count();
+    $totalKategori = Category::count();
+    $totalUser = User::count();
+
+    return view('dokumens.index', compact('dokumens', 'totalDokumen', 'totalKategori', 'totalUser'));
+}
+
 
     // Form tambah dokumen baru
     public function create()

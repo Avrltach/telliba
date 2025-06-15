@@ -45,8 +45,8 @@
         <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
 
             @isset($header)
-            <header class="bg-white border-b border-gray-200 shadow-sm px-4 py-3 flex-shrink-0">
-                <div class="w-full">
+            <header class="bg-white border-b border-gray-200 shadow-sm px-30 py-3 flex-shrink-0">
+                <div class="w-fu">
                     {{ $header }}
                 </div>
             </header>

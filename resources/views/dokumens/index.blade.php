@@ -37,6 +37,7 @@
                                 <td class="px-6 py-4">{{ $doc->category->name }}</td>
                                 <td class="px-6 py-4">{{ Str::limit($doc->description, 80, '...') }}</td>
                                 <td class="px-6 py-4 space-x-4">
+                                    @if (auth()->user()->usertype =='admin')
                                     <a href="{{ route('dokumens.show', $doc->id) }}" class="text-blue-600 hover:underline">Lihat</a>
                                     <a href="{{ route('dokumens.edit', $doc->id) }}" class="text-yellow-600 hover:underline">Edit</a>
                                     <form action="{{ route('dokumens.destroy', $doc->id) }}" method="POST" class="inline"
@@ -45,6 +46,9 @@
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:underline">Hapus</button>
                                     </form>
+                                    @else
+                                    <a href="{{ route('dokumens.show', $doc->id) }}" class="text-blue-600 hover:underline">Lihat</a>
+                                    @endif
                                 </td>
                             </tr>
                         @empty

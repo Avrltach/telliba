@@ -62,8 +62,6 @@
     </div>
 </div>
 
-
-
         <!-- Navigation -->
         <nav class="flex flex-col flex-grow space-y-3">
             <a href="{{ route('admin.dashboard') }}" class="group flex items-center space-x-4 px-4 py-3 rounded-2xl font-medium text-indigo-200 hover:text-white hover:bg-indigo-600 transition-all shadow-md">
@@ -126,8 +124,7 @@
                     </svg>
                 </button>
                 <div id="userMenu" class="hidden flex flex-col space-y-1 mt-1 ml-6">
-                    <a href="#" class="px-4 py-2 rounded-xl text-indigo-200 hover:bg-indigo-600 hover:text-white">Tambah User</a>
-                    <a href="#" class="px-4 py-2 rounded-xl text-indigo-200 hover:bg-indigo-600 hover:text-white">Lihat User</a>
+                    <a href="{{ route('users.index') }}" class="px-4 py-2 rounded-xl text-indigo-200 hover:bg-indigo-600 hover:text-white">Lihat User</a>
                 </div>
             </div>
         </nav>

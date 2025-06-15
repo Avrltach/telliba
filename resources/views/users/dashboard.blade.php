@@ -66,20 +66,7 @@
                     </div>
                 </div>
 
-                <a href="{{ route('dokumens.create') }}"
-                    class="bg-white border rounded-xl shadow-lg flex items-center justify-between p-5 hover:bg-gray-50 transition">
-                    <div>
-                        <h3 class="font-semibold text-lg text-gray-800">Tambah Arsip</h3>
-                        <p class="text-sm text-gray-500">Tambah arsip dokumen digital</p>
-                    </div>
-                    <div class="bg-red-600 text-white rounded-lg p-3">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 4v16m8-8H4" />
-                        </svg>
-                    </div>
-                </a>
+               
             </div>
 
             <div class="py-10">

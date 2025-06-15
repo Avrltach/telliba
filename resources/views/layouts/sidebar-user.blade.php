@@ -18,26 +18,27 @@
             <span class="text-2xl font-extrabold tracking-tight uppercase drop-shadow-lg select-text">Arsip Digital</span>
         </div>
 
-     <!-- Profile Section (Versi Baru & Berbeda) -->
+ <!-- Profile Section (Versi Baru & Berbeda - Centered Layout) -->
 <div class="mb-8">
-    <div class="relative bg-white/10 backdrop-blur-lg rounded-2xl p-5 shadow-lg border border-white/10 overflow-hidden">
-        <!-- Ornamen Icon Bulat di Belakang Avatar -->
-        <div class="absolute -top-4 -left-4 w-20 h-20 bg-indigo-500/20 rounded-full"></div>
+    <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-lg border border-white/10 text-center relative overflow-hidden">
+        <!-- Ornamen di Sudut Kanan Atas -->
+        <div class="absolute -top-4 -right-4 w-24 h-24 bg-indigo-500/20 rounded-full"></div>
 
-        <div class="relative z-10 flex items-center space-x-4 mb-3">
+        <div class="relative z-10 flex flex-col items-center space-y-3">
             <div class="relative">
                 <div class="bg-indigo-500 p-1 rounded-full shadow-md">
                     <img 
                         src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=3B82F6&color=fff&size=64" 
                         alt="Profile"
-                        class="w-14 h-14 rounded-full object-cover ring-2 ring-white"
+                        class="w-16 h-16 rounded-full object-cover ring-2 ring-white"
                     />
                 </div>
-                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white shadow-sm"></div>
+                <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-400 rounded-full border-2 border-white shadow-sm"></div>
             </div>
-            <div class="flex-1 min-w-0">
-                <h3 class="text-lg font-bold text-white truncate">{{ Auth::user()->name }}</h3>
-                <p class="text-xs text-indigo-100 truncate">{{ Auth::user()->email }}</p>
+
+            <div class="max-w-full">
+                <h3 class="text-lg font-bold text-white">{{ Auth::user()->name }}</h3>
+                <p class="text-xs text-indigo-100">{{ Auth::user()->email }}</p>
                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-indigo-200 text-indigo-900 mt-1">
                     <i class="fa-solid fa-user-shield mr-1"></i>
                     {{ Auth::user()->usertype }}
@@ -45,12 +46,12 @@
             </div>
         </div>
 
-        <div class="flex space-x-3">
-            <a href="{{ route('profile.edit') }}" class="flex-1 flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-indigo-700 hover:bg-indigo-600 rounded-lg transition duration-300 group">
+        <div class="mt-4 flex flex-col space-y-2">
+            <a href="{{ route('profile.edit') }}" class="w-full flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-indigo-700 hover:bg-indigo-600 rounded-lg transition duration-300 group">
                 <i class="fa-solid fa-sliders mr-1 group-hover:rotate-45 transition-transform duration-300"></i>
                 Edit Profile
             </a>
-            <form method="POST" action="{{ route('logout') }}" class="flex-1">
+            <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="w-full flex items-center justify-center px-3 py-2 text-xs font-medium text-red-600 bg-red-100 hover:bg-red-200 rounded-lg transition duration-300 group">
                     <i class="fa-solid fa-arrow-right-from-bracket mr-1 group-hover:translate-x-1 transition-transform duration-300"></i>
@@ -61,37 +62,37 @@
     </div>
 </div>
 
-
         <!-- Navigation -->
         <nav class="flex flex-col flex-grow space-y-3">
-            <a href="#" class="group flex items-center space-x-4 px-4 py-3 rounded-2xl font-medium text-indigo-200 hover:text-white hover:bg-indigo-600 transition-all shadow-md">
+            <a href="{{ route('dashboard') }}" class="group flex items-center space-x-4 px-4 py-3 rounded-2xl font-medium text-indigo-200 hover:text-white hover:bg-indigo-600 transition-all shadow-md">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-300 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M3 6h18M3 18h18"/>
                 </svg>
                 <span>Dashboard</span>
             </a>
 
-            <!-- Dokumen Dropdown -->
-            <div>
-                <button type="button" onclick="toggleDropdown('dokumenMenu')" class="w-full flex items-center justify-between px-4 py-3 rounded-2xl font-medium text-indigo-200 hover:text-white hover:bg-indigo-600 transition-all shadow-md">
-                    <div class="flex items-center space-x-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-300 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16"/>
-                        </svg>
-                        <span>Dokumen</span>
-                    </div>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <div id="dokumenMenu" class="hidden flex flex-col space-y-1 mt-1 ml-6">
-                    <a href="#" class="px-4 py-2 rounded-xl text-indigo-200 hover:bg-indigo-600 hover:text-white">Tambah Dokumen</a>
-                    <a href="#" class="px-4 py-2 rounded-xl text-indigo-200 hover:bg-indigo-600 hover:text-white">Lihat Dokumen</a>
-                </div>
-            </div>
+          <!-- Dokumen Dropdown -->
+<div>
+    <button type="button" onclick="toggleDropdown('dokumenMenu')" class="w-full flex items-center justify-between px-4 py-3 rounded-2xl font-medium text-indigo-200 hover:text-white hover:bg-indigo-600 transition-all shadow-md">
+        <div class="flex items-center space-x-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-300 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16"/>
+            </svg>
+            <span>Dokumen</span>
+        </div>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+    </button>
+    <div id="dokumenMenu" class="hidden flex flex-col space-y-1 mt-1 ml-6">
+        <a href="{{ route('dokumens.create') }}" class="px-4 py-2 rounded-xl text-indigo-200 hover:bg-indigo-600 hover:text-white">Tambah Dokumen</a>
+        <a href="{{ route('dokumens.index') }}" class="px-4 py-2 rounded-xl text-indigo-200 hover:bg-indigo-600 hover:text-white">Lihat Dokumen</a>
+    </div>
+</div>
 
-          
 
+         
+            
         </nav>
 
         <!-- Footer -->
