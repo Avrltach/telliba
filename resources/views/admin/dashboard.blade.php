@@ -5,7 +5,6 @@
 <x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="bg-blue-600 text-white rounded-xl p-5 relative shadow-lg">
                     <div class="text-3xl font-bold">{{ $totalDokumen }}</div>
