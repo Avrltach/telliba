@@ -13,14 +13,17 @@ class DokumenController extends Controller
 {
     // Tampilkan list dokumen dengan pagination
     public function index()
-{
-    $dokumens = Dokumen::with('category')->paginate(10); // ambil data dokumen dengan relasi category
+    {
+    // Ambil daftar dokumen beserta kategori
+    $dokumens = Dokumen::with('category')->latest()->paginate(10);
+
+    // Ambil jumlah dokumen dan kategori
     $totalDokumen = Dokumen::count();
     $totalKategori = Category::count();
-    $totalUser = User::count();
 
-    return view('dokumens.index', compact('dokumens', 'totalDokumen', 'totalKategori', 'totalUser'));
-}
+    // Kirim data ke view
+    return view('dokumens.index', compact('dokumens', 'totalDokumen', 'totalKategori'));
+    }
 
 
     // Form tambah dokumen baru
